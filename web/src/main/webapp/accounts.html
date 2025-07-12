@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Account Management</title>
+    <!-- Reusing the same styles -->
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            margin: 2em;
+            background-color: #f4f7f9;
+        }
+
+        h1, h2 {
+            color: #333;
+        }
+
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            max-width: 800px;
+            background-color: #fff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+
+        th {
+            background-color: #007bff;
+            color: white;
+        }
+
+        form {
+            margin-bottom: 2em;
+            border: 1px solid #ccc;
+            padding: 1.5em;
+            background-color: #fff;
+            width: 100%;
+            max-width: 760px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        input[type="text"], input[type="number"] {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        input[type="submit"] {
+            background-color: #28a745;
+            color: white;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+
+<a href="index.html">← Back to Customers</a>
+
+<h1 id="accountTitle">Accounts</h1>
+
+<h2>Create New Account</h2>
+<form id="addAccountForm">
+    Account Number: <input type="text" id="accountNumber" required><br><br>
+    Initial Balance: <input type="number" step="0.01" id="accountBalance" required><br><br>
+    Interest Rate: <input type="number" step="0.001" id="accountInterest" required><br><br>
+    <input type="submit" value="Create Account">
+</form>
+
+<h2>Existing Accounts</h2>
+<table>
+    <thead>
+    <tr>
+        <th>Account ID</th>
+        <th>Account Number</th>
+        <th>Balance</th>
+        <th>Interest Rate</th>
+    </tr>
+    </thead>
+    <tbody id="accountTableBody">
+    <!-- Account data will be injected here -->
+    </tbody>
+</table>
+
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const accountTableBody = document.getElementById('accountTableBody');
+        const addAccountForm = document.getElementById('addAccountForm');
+        const accountTitle = document.getElementById('accountTitle');
+
+        const apiBaseUrl = '/banking/api';
+
+        // Get the customerId from the URL query string
+        const urlParams = new URLSearchParams(window.location.search);
+        const customerId = urlParams.get('customerId');
+
+        if (!customerId) {
+            accountTitle.textContent = "Error: No Customer ID provided.";
+            return;
+        }
+
+        const fetchAccounts = async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}/accounts?customerId=${customerId}`);
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+                const customer = await response.json(); // The API returns the full customer object
+
+                accountTitle.textContent = `Accounts for: ${customer.name}`;
+                accountTableBody.innerHTML = '';
+
+                if (customer.accounts && customer.accounts.length > 0) {
+                    customer.accounts.forEach(account => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                                <td>${account.id}</td>
+                                <td>${account.accountNumber}</td>
+                                <td>${account.balance.toFixed(2)}</td>
+                                <td>${account.interestRate}</td>
+                            `;
+                        accountTableBody.appendChild(row);
+                    });
+                } else {
+                    accountTableBody.innerHTML = '<tr><td colspan="4">No accounts found for this customer.</td></tr>';
+                }
+            } catch (error) {
+                console.error("Failed to fetch accounts:", error);
+                accountTableBody.innerHTML = '<tr><td colspan="4">Error loading account data.</td></tr>';
+            }
+        };
+
+        addAccountForm.addEventListener('submit', async (event) => {
+            event.preventDefault();
+
+            const newAccount = {
+                accountNumber: document.getElementById('accountNumber').value,
+                balance: parseFloat(document.getElementById('accountBalance').value),
+                interestRate: parseFloat(document.getElementById('accountInterest').value),
+                customer: {id: parseInt(customerId)} // Nest customer ID in the payload as expected by the servlet
+            };
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/accounts`, {
+                    method: 'POST',
+                    headers: {'Content-Type': 'application/json'},
+                    body: JSON.stringify(newAccount)
+                });
+
+                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+
+                addAccountForm.reset();
+                fetchAccounts();
+            } catch (error) {
+                console.error("Failed to create account:", error);
+                alert("Error: Could not create account.");
+            }
+        });
+
+        // Initial fetch of account data
+        fetchAccounts();
+    });
+</script>
+</body>
+</html>

@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Customer Management</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; margin: 2em; background-color: #f4f7f9; }
+        h1, h2 { color: #333; }
+        table { border-collapse: collapse; width: 100%; max-width: 800px; background-color: #fff; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        th, td { border: 1px solid #ddd; padding: 12px; text-align: left; }
+        th { background-color: #007bff; color: white; }
+        form { margin-bottom: 2em; border: 1px solid #ccc; padding: 1.5em; background-color: #fff; width: 100%; max-width: 760px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
+        input[type="text"], input[type="email"] { width: calc(100% - 20px); padding: 10px; margin-bottom: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        input[type="submit"] { background-color: #28a745; color: white; padding: 10px 15px; border: none; border-radius: 4px; cursor: pointer; }
+        input[type="submit"]:hover { background-color: #218838; }
+        a { color: #007bff; text-decoration: none; }
+        a:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<h1>Customer Management</h1>
+
+<h2>Create New Customer</h2>
+<form id="addCustomerForm">
+    Name: <input type="text" id="customerName" required><br><br>
+    Contact Info: <input type="email" id="customerContact" required><br><br>
+    <input type="submit" value="Create Customer">
+</form>
+
+<h2>All Customers</h2>
+<table>
+    <thead>
+    <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Contact Info</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody id="customerTableBody">
+    <!-- Customer data will be injected here by JavaScript -->
+    </tbody>
+</table>
+
+<script>
+    // Wait for the DOM to be fully loaded before running scripts
+    document.addEventListener('DOMContentLoaded', () => {
+        const customerTableBody = document.getElementById('customerTableBody');
+        const addCustomerForm = document.getElementById('addCustomerForm');
+        const customerNameInput = document.getElementById('customerName');
+        const customerContactInput = document.getElementById('customerContact');
+
+        const apiBaseUrl = '/banking/api'; // Centralized API path
+
+        // Function to fetch customers and populate the table
+        const fetchCustomers = async () => {
+            try {
+                const response = await fetch(`${apiBaseUrl}/customers`);
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+                const customers = await response.json();
+
+                // Clear existing table rows
+                customerTableBody.innerHTML = '';
+
+                // Populate table with new data
+                customers.forEach(customer => {
+                    const row = document.createElement('tr');
+                    row.innerHTML = `
+                            <td>${customer.id}</td>
+                            <td>${customer.name}</td>
+                            <td>${customer.contactInfo}</td>
+                            <td><a href="accounts.html?customerId=${customer.id}">View Accounts</a></td>
+                        `;
+                    customerTableBody.appendChild(row);
+                });
+            } catch (error) {
+                console.error("Failed to fetch customers:", error);
+                customerTableBody.innerHTML = '<tr><td colspan="4">Error loading data.</td></tr>';
+            }
+        };
+
+        // Event listener for the form submission
+        addCustomerForm.addEventListener('submit', async (event) => {
+            event.preventDefault(); // Prevent default form submission
+
+            const newCustomer = {
+                name: customerNameInput.value,
+                contactInfo: customerContactInput.value
+            };
+
+            try {
+                const response = await fetch(`${apiBaseUrl}/customers`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(newCustomer)
+                });
+
+                if (!response.ok) {
+                    throw new Error(`HTTP error! status: ${response.status}`);
+                }
+
+                // Clear form fields and refresh the customer list
+                addCustomerForm.reset();
+                fetchCustomers();
+
+            } catch (error) {
+                console.error("Failed to create customer:", error);
+                alert("Error: Could not create customer.");
+            }
+        });
+
+        // Initial fetch of customers when the page loads
+        fetchCustomers();
+    });
+</script>
+</body>
+</html>
