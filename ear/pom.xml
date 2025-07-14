@@ -64,7 +64,7 @@
                             <includeInApplicationXml>true</includeInApplicationXml>
                         </jarModule>
                     </modules>
-                    <library-directory>lib</library-directory>
+<!--                    <library-directory>lib</library-directory>-->
                 </configuration>
             </plugin>
         </plugins>

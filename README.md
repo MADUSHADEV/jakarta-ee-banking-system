@@ -77,6 +77,6 @@ This project is a 4-module Enterprise Banking System using Jakarta EE 9, EJB, JP
 
 Open your web browser and navigate to:
 
-**[http://localhost:8080/banking/customers](http://localhost:8080/banking/customers)**
+**[http://localhost:9001/banking/customers](http://localhost:9001/banking/customers)**
 
 You should see the list of customers from the database and be able to interact with the application.
