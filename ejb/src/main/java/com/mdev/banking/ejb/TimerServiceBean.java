@@ -2,6 +2,7 @@ package com.mdev.banking.ejb;
 
 
 import com.mdev.banking.core.entity.Account;
+import jakarta.annotation.security.RunAs;
 import jakarta.ejb.Schedule;
 import jakarta.ejb.Stateless;
 import jakarta.ejb.TransactionAttribute;
@@ -15,6 +16,7 @@ import java.util.logging.Logger;
  * EJB Timer Service for performing scheduled, automated tasks.
  */
 @Stateless
+@RunAs("ADMIN")
 public class TimerServiceBean {
     private static final Logger logger = Logger.getLogger(TimerServiceBean.class.getName());
 

@@ -1,5 +1,6 @@
 package com.mdev.banking.core.entity;
 
+import jakarta.json.bind.annotation.JsonbTransient;
 import jakarta.persistence.*;
 
 import java.io.Serializable;
@@ -51,6 +52,7 @@ public class Account implements Serializable {
         this.interestRate = interestRate;
     }
 
+    @JsonbTransient
     public Customer getCustomer() {
         return customer;
     }

@@ -58,13 +58,8 @@
                             <groupId>com.mdev</groupId>
                             <artifactId>ejb</artifactId>
                         </ejbModule>
-                        <jarModule>
-                            <groupId>com.mdev</groupId>
-                            <artifactId>core</artifactId>
-                            <includeInApplicationXml>true</includeInApplicationXml>
-                        </jarModule>
                     </modules>
-<!--                    <library-directory>lib</library-directory>-->
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
                 </configuration>
             </plugin>
         </plugins>
