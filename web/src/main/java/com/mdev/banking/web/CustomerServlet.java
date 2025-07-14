@@ -16,7 +16,7 @@ import java.util.List;
 
 @WebServlet("/api/customers")
 public class CustomerServlet extends HttpServlet {
-    @EJB
+    @EJB(name = "com.mdev.banking.web.CustomerServlet/customerService")
     private CustomerService customerService;
 
     // A single, reusable JSON-B instance

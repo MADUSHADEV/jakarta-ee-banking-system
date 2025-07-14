@@ -4,14 +4,11 @@
          xsi:schemaLocation="http://xmlns.jcp.org/xml/ns/javaee http://xmlns.jcp.org/xml/ns/javaee/web-app_4_0.xsd"
          version="4.0">
 
-    <servlet>
-        <servlet-name>CustomerServlet</servlet-name>
-        <servlet-class>com.mdev.banking.web.CustomerServlet</servlet-class>
-    </servlet>
-    <servlet-mapping>
-        <servlet-name>CustomerServlet</servlet-name>
-        <url-pattern>/customers</url-pattern>
-    </servlet-mapping>
+    <ejb-ref>
+        <ejb-ref-name>com.mdev.banking.web.CustomerServlet/customerService</ejb-ref-name>
+        <ejb-ref-type>Session</ejb-ref-type>
+        <local>com.mdev.banking.ejb.CustomerService</local>
+    </ejb-ref>
 
     <welcome-file-list>
         <!-- The default page to serve -->
