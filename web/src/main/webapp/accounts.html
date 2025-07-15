@@ -257,7 +257,7 @@
                     <thead>
                     <tr>
                         <th>Account Number</th>
-                        <th>Account Type</th>
+                        <th>Interest Rate</th>
                         <th>Balance</th>
                         <th>Withdraw</th>
                         <th>Deposit</th>
@@ -293,12 +293,12 @@
         <div class="section" id="createAccountSection" style="display: none;">
             <h2>➕ Create New Account</h2>
             <div class="form-group">
-                <label for="accountType">Account Type:</label>
-                <select id="accountType">
-                    <option value="SAVINGS">Savings</option>
-                    <option value="CHECKING">Checking</option>
-                    <option value="BUSINESS">Business</option>
-                </select>
+                <label for="accountNumber">Account Number</label>
+                <input type="text" id="accountNumber" placeholder="Enter Account Number">
+            </div>
+            <div class="form-group">
+                <label for="accountInterest">Account Type:</label>
+                <input type="number" id="accountInterest" placeholder="Enter Interest rate" step="0.001">
             </div>
             <div class="form-group">
                 <label for="initialBalance">Initial Balance:</label>
@@ -398,7 +398,7 @@
             const row = tableBody.insertRow();
             row.innerHTML = `
                     <td>${account.accountNumber}</td>
-                    <td>${account.accountType}</td>
+                    <td>${account.interestRate}</td>
                     <td>$${account.balance.toFixed(2)}</td>
                     <td><button class="btn btn-small btn-warning" onclick="openWithdrawModal('${account.accountNumber}')">Withdraw</button></td>
                     <td><button class="btn btn-small btn-success" onclick="openDepositModal('${account.accountNumber}')">Deposit</button></td>
@@ -432,7 +432,7 @@
         }
 
         // Send request to servlet (you'll need to create a separate servlet for this)
-        fetch('/api/withdraw', {
+        fetch(`${apiBaseUrl}/withdraw`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -468,7 +468,7 @@
         }
 
         // Send request to servlet (you'll need to create a separate servlet for this)
-        fetch('/api/deposit', {
+        fetch(`${apiBaseUrl}/deposit`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -510,7 +510,7 @@
         }
 
         // Send request to servlet (you'll need to create a separate servlet for this)
-        fetch('/api/transfer', {
+        fetch(`${apiBaseUrl}/transfer`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -541,8 +541,9 @@
     }
 
     function createAccount() {
-        const accountType = document.getElementById('accountType').value;
         const initialBalance = document.getElementById('initialBalance').value;
+        const accountInterest = document.getElementById('accountInterest').value;
+        const accountNumber = document.getElementById('accountNumber').value;
 
         if (!currentCustomer) {
             alert('Please load a customer first');
@@ -555,14 +556,15 @@
         }
 
         const accountData = {
-            accountType: accountType,
+            accountNumber: accountNumber,
             balance: parseFloat(initialBalance),
+            interestRate: accountInterest,
             customer: {
                 id: currentCustomer.id
             }
         };
 
-        fetch('/api/accounts', {
+        fetch(`${apiBaseUrl}/accounts`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
