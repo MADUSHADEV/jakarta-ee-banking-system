@@ -10,6 +10,8 @@
         <!-- Specify the shared core entities -->
         <class>com.mdev.banking.core.entity.Account</class>
         <class>com.mdev.banking.core.entity.Customer</class>
+        <class>com.mdev.banking.core.entity.User</class>
+
 
         <properties>
             <!-- Hibernate dialect for MySQL -->

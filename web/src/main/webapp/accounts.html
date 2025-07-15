@@ -2,184 +2,601 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Account Management</title>
-    <!-- Reusing the same styles -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banking System</title>
     <style>
-        body {
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-            margin: 2em;
-            background-color: #f4f7f9;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        h1, h2 {
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .section {
+            margin-bottom: 40px;
+            padding: 30px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            border-left: 5px solid #667eea;
+        }
+
+        .section h2 {
             color: #333;
+            margin-bottom: 20px;
+            font-size: 1.8em;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #555;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s;
+        }
+
+        input:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-small {
+            padding: 8px 15px;
+            font-size: 14px;
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, #28a745 0%, #20c997 100%);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #ffc107 0%, #fd7e14 100%);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #dc3545 0%, #fd7e14 100%);
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-top: 20px;
         }
 
         table {
-            border-collapse: collapse;
             width: 100%;
-            max-width: 800px;
-            background-color: #fff;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            border-collapse: collapse;
+            background: white;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
         }
 
         th, td {
-            border: 1px solid #ddd;
-            padding: 12px;
+            padding: 15px;
             text-align: left;
+            border-bottom: 1px solid #eee;
         }
 
         th {
-            background-color: #007bff;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
+            font-weight: 600;
         }
 
-        form {
-            margin-bottom: 2em;
-            border: 1px solid #ccc;
-            padding: 1.5em;
-            background-color: #fff;
+        tr:hover {
+            background: #f8f9fa;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
             width: 100%;
-            max-width: 760px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(5px);
         }
 
-        input[type="text"], input[type="number"] {
-            width: calc(100% - 20px);
-            padding: 10px;
-            margin-bottom: 10px;
-            border: 1px solid #ccc;
-            border-radius: 4px;
+        .modal-content {
+            background: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: 15px;
+            width: 90%;
+            max-width: 500px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+            animation: modalSlideIn 0.3s ease-out;
         }
 
-        input[type="submit"] {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 15px;
-            border: none;
-            border-radius: 4px;
+        @keyframes modalSlideIn {
+            from {
+                transform: translateY(-50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
             cursor: pointer;
         }
 
-        input[type="submit"]:hover {
-            background-color: #218838;
+        .close:hover {
+            color: #000;
         }
 
-        a {
-            color: #007bff;
-            text-decoration: none;
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
         }
 
-        a:hover {
-            text-decoration: underline;
+        .alert-success {
+            background: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .transfer-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        @media (max-width: 768px) {
+            .transfer-section {
+                grid-template-columns: 1fr;
+            }
         }
     </style>
 </head>
 <body>
+<div class="container">
+    <div class="header">
+        <h1>🏦 Banking System</h1>
+        <p>Manage your accounts with ease</p>
+    </div>
 
-<a href="customers.html">← Back to Customers</a>
+    <div class="content">
+        <!-- Load Customer Section -->
+        <div class="section">
+            <h2>👤 Load Customer</h2>
+            <div class="form-group">
+                <label for="customerId">Customer ID:</label>
+                <input type="number" id="customerId" placeholder="Enter customer ID">
+            </div>
+            <button class="btn" onclick="loadCustomer()">Load Customer</button>
+        </div>
 
-<h1 id="accountTitle">Accounts</h1>
+        <!-- Customer Info Section -->
+        <div class="section" id="customerInfo" style="display: none;">
+            <h2>📋 Customer Information</h2>
+            <div id="customerDetails"></div>
+        </div>
 
-<h2>Create New Account</h2>
-<form id="addAccountForm">
-    Account Number: <input type="text" id="accountNumber" required><br><br>
-    Initial Balance: <input type="number" step="0.01" id="accountBalance" required><br><br>
-    Interest Rate: <input type="number" step="0.001" id="accountInterest" required><br><br>
-    <input type="submit" value="Create Account">
-</form>
+        <!-- Existing Accounts Section -->
+        <div class="section" id="accountsSection" style="display: none;">
+            <h2>💳 Existing Accounts</h2>
+            <div class="table-container">
+                <table id="accountsTable">
+                    <thead>
+                    <tr>
+                        <th>Account Number</th>
+                        <th>Account Type</th>
+                        <th>Balance</th>
+                        <th>Withdraw</th>
+                        <th>Deposit</th>
+                    </tr>
+                    </thead>
+                    <tbody id="accountsTableBody">
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-<h2>Existing Accounts</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Account ID</th>
-        <th>Account Number</th>
-        <th>Balance</th>
-        <th>Interest Rate</th>
-    </tr>
-    </thead>
-    <tbody id="accountTableBody">
-    <!-- Account data will be injected here -->
-    </tbody>
-</table>
+        <!-- Money Transfer Section -->
+        <div class="section" id="transferSection" style="display: none;">
+            <h2>💸 Money Transfer</h2>
+            <div class="transfer-section">
+                <div class="form-group">
+                    <label for="fromAccount">From Account:</label>
+                    <input type="text" id="fromAccount" placeholder="From Account Number">
+                </div>
+                <div class="form-group">
+                    <label for="toAccount">To Account:</label>
+                    <input type="text" id="toAccount" placeholder="To Account Number">
+                </div>
+                <div class="form-group">
+                    <label for="transferAmount">Amount:</label>
+                    <input type="number" id="transferAmount" placeholder="Transfer Amount" step="0.01">
+                </div>
+            </div>
+            <button class="btn" onclick="transferMoney()">Transfer Money</button>
+        </div>
+
+        <!-- Create New Account Section -->
+        <div class="section" id="createAccountSection" style="display: none;">
+            <h2>➕ Create New Account</h2>
+            <div class="form-group">
+                <label for="accountType">Account Type:</label>
+                <select id="accountType">
+                    <option value="SAVINGS">Savings</option>
+                    <option value="CHECKING">Checking</option>
+                    <option value="BUSINESS">Business</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="initialBalance">Initial Balance:</label>
+                <input type="number" id="initialBalance" placeholder="Enter initial balance" step="0.01">
+            </div>
+            <button class="btn" onclick="createAccount()">Create Account</button>
+        </div>
+    </div>
+</div>
+
+<!-- Withdraw Modal -->
+<div id="withdrawModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('withdrawModal')">&times;</span>
+        <h2>💰 Withdraw Money</h2>
+        <div class="form-group">
+            <label for="withdrawAmount">Amount to Withdraw:</label>
+            <input type="number" id="withdrawAmount" placeholder="Enter amount" step="0.01">
+        </div>
+        <div class="form-group">
+            <label>Account Number:</label>
+            <input type="text" id="withdrawAccountNumber" readonly>
+        </div>
+        <button class="btn btn-warning" onclick="processWithdraw()">Withdraw</button>
+    </div>
+</div>
+
+<!-- Deposit Modal -->
+<div id="depositModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('depositModal')">&times;</span>
+        <h2>💵 Deposit Money</h2>
+        <div class="form-group">
+            <label for="depositAmount">Amount to Deposit:</label>
+            <input type="number" id="depositAmount" placeholder="Enter amount" step="0.01">
+        </div>
+        <div class="form-group">
+            <label>Account Number:</label>
+            <input type="text" id="depositAccountNumber" readonly>
+        </div>
+        <button class="btn btn-success" onclick="processDeposit()">Deposit</button>
+    </div>
+</div>
 
 <script>
-    document.addEventListener('DOMContentLoaded', () => {
-        const accountTableBody = document.getElementById('accountTableBody');
-        const addAccountForm = document.getElementById('addAccountForm');
-        const accountTitle = document.getElementById('accountTitle');
+    let currentCustomer = null;
+    const apiBaseUrl = '/banking/api';
 
-        const apiBaseUrl = '/banking/api';
-
-        // Get the customerId from the URL query string
-        const urlParams = new URLSearchParams(window.location.search);
-        const customerId = urlParams.get('customerId');
-
+    function loadCustomer() {
+        const customerId = document.getElementById('customerId').value;
         if (!customerId) {
-            accountTitle.textContent = "Error: No Customer ID provided.";
+            alert('Please enter a customer ID');
             return;
         }
 
-        const fetchAccounts = async () => {
-            try {
-                const response = await fetch(`${apiBaseUrl}/accounts?customerId=${customerId}`);
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-                const customer = await response.json(); // The API returns the full customer object
-
-                accountTitle.textContent = `Accounts for: ${customer.name}`;
-                accountTableBody.innerHTML = '';
-
-                if (customer.accounts && customer.accounts.length > 0) {
-                    customer.accounts.forEach(account => {
-                        const row = document.createElement('tr');
-                        row.innerHTML = `
-                                <td>${account.id}</td>
-                                <td>${account.accountNumber}</td>
-                                <td>${account.balance.toFixed(2)}</td>
-                                <td>${account.interestRate}</td>
-                            `;
-                        accountTableBody.appendChild(row);
-                    });
-                } else {
-                    accountTableBody.innerHTML = '<tr><td colspan="4">No accounts found for this customer.</td></tr>';
+        fetch(`${apiBaseUrl}/accounts?customerId=${customerId}`)
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    alert('Error: ' + data.error);
+                    return;
                 }
-            } catch (error) {
-                console.error("Failed to fetch accounts:", error);
-                accountTableBody.innerHTML = '<tr><td colspan="4">Error loading account data.</td></tr>';
+
+                currentCustomer = data;
+                displayCustomerInfo(data);
+                displayAccounts(data.accounts);
+
+                // Show sections
+                document.getElementById('customerInfo').style.display = 'block';
+                document.getElementById('accountsSection').style.display = 'block';
+                document.getElementById('transferSection').style.display = 'block';
+                document.getElementById('createAccountSection').style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to load customer data');
+            });
+    }
+
+    function displayCustomerInfo(customer) {
+        const customerDetails = document.getElementById('customerDetails');
+        customerDetails.innerHTML = `
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px;">
+                    <div><strong>Name:</strong> ${customer.firstName} ${customer.lastName}</div>
+                    <div><strong>Email:</strong> ${customer.email}</div>
+                    <div><strong>Phone:</strong> ${customer.phone}</div>
+                    <div><strong>Address:</strong> ${customer.address}</div>
+                </div>
+            `;
+    }
+
+    function displayAccounts(accounts) {
+        const tableBody = document.getElementById('accountsTableBody');
+        tableBody.innerHTML = '';
+
+        accounts.forEach(account => {
+            const row = tableBody.insertRow();
+            row.innerHTML = `
+                    <td>${account.accountNumber}</td>
+                    <td>${account.accountType}</td>
+                    <td>$${account.balance.toFixed(2)}</td>
+                    <td><button class="btn btn-small btn-warning" onclick="openWithdrawModal('${account.accountNumber}')">Withdraw</button></td>
+                    <td><button class="btn btn-small btn-success" onclick="openDepositModal('${account.accountNumber}')">Deposit</button></td>
+                `;
+        });
+    }
+
+    function openWithdrawModal(accountNumber) {
+        document.getElementById('withdrawAccountNumber').value = accountNumber;
+        document.getElementById('withdrawAmount').value = '';
+        document.getElementById('withdrawModal').style.display = 'block';
+    }
+
+    function openDepositModal(accountNumber) {
+        document.getElementById('depositAccountNumber').value = accountNumber;
+        document.getElementById('depositAmount').value = '';
+        document.getElementById('depositModal').style.display = 'block';
+    }
+
+    function closeModal(modalId) {
+        document.getElementById(modalId).style.display = 'none';
+    }
+
+    function processWithdraw() {
+        const accountNumber = document.getElementById('withdrawAccountNumber').value;
+        const amount = document.getElementById('withdrawAmount').value;
+
+        if (!amount || amount <= 0) {
+            alert('Please enter a valid amount');
+            return;
+        }
+
+        // Send request to servlet (you'll need to create a separate servlet for this)
+        fetch('/api/withdraw', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                accountNumber: accountNumber,
+                amount: parseFloat(amount)
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Withdrawal successful!');
+                    closeModal('withdrawModal');
+                    loadCustomer(); // Refresh data
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to process withdrawal');
+            });
+    }
+
+    function processDeposit() {
+        const accountNumber = document.getElementById('depositAccountNumber').value;
+        const amount = document.getElementById('depositAmount').value;
+
+        if (!amount || amount <= 0) {
+            alert('Please enter a valid amount');
+            return;
+        }
+
+        // Send request to servlet (you'll need to create a separate servlet for this)
+        fetch('/api/deposit', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                accountNumber: accountNumber,
+                amount: parseFloat(amount)
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Deposit successful!');
+                    closeModal('depositModal');
+                    loadCustomer(); // Refresh data
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to process deposit');
+            });
+    }
+
+    function transferMoney() {
+        const fromAccount = document.getElementById('fromAccount').value;
+        const toAccount = document.getElementById('toAccount').value;
+        const amount = document.getElementById('transferAmount').value;
+
+        if (!fromAccount || !toAccount || !amount) {
+            alert('Please fill in all fields');
+            return;
+        }
+
+        if (amount <= 0) {
+            alert('Please enter a valid amount');
+            return;
+        }
+
+        // Send request to servlet (you'll need to create a separate servlet for this)
+        fetch('/api/transfer', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                fromAccountNumber: fromAccount,
+                toAccountNumber: toAccount,
+                amount: parseFloat(amount)
+            })
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Transfer successful!');
+                    // Clear form
+                    document.getElementById('fromAccount').value = '';
+                    document.getElementById('toAccount').value = '';
+                    document.getElementById('transferAmount').value = '';
+                    loadCustomer(); // Refresh data
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to process transfer');
+            });
+    }
+
+    function createAccount() {
+        const accountType = document.getElementById('accountType').value;
+        const initialBalance = document.getElementById('initialBalance').value;
+
+        if (!currentCustomer) {
+            alert('Please load a customer first');
+            return;
+        }
+
+        if (!initialBalance || initialBalance < 0) {
+            alert('Please enter a valid initial balance');
+            return;
+        }
+
+        const accountData = {
+            accountType: accountType,
+            balance: parseFloat(initialBalance),
+            customer: {
+                id: currentCustomer.id
             }
         };
 
-        addAccountForm.addEventListener('submit', async (event) => {
-            event.preventDefault();
+        fetch('/api/accounts', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(accountData)
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (data.status === 'success') {
+                    alert('Account created successfully!');
+                    document.getElementById('initialBalance').value = '';
+                    loadCustomer(); // Refresh data
+                } else {
+                    alert('Error: ' + data.message);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to create account');
+            });
+    }
 
-            const newAccount = {
-                accountNumber: document.getElementById('accountNumber').value,
-                balance: parseFloat(document.getElementById('accountBalance').value),
-                interestRate: parseFloat(document.getElementById('accountInterest').value),
-                customer: {id: parseInt(customerId)} // Nest customer ID in the payload as expected by the servlet
-            };
+    // Close modal when clicking outside
+    window.onclick = function (event) {
+        const withdrawModal = document.getElementById('withdrawModal');
+        const depositModal = document.getElementById('depositModal');
 
-            try {
-                const response = await fetch(`${apiBaseUrl}/accounts`, {
-                    method: 'POST',
-                    headers: {'Content-Type': 'application/json'},
-                    body: JSON.stringify(newAccount)
-                });
-
-                if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-
-                addAccountForm.reset();
-                fetchAccounts();
-            } catch (error) {
-                console.error("Failed to create account:", error);
-                alert("Error: Could not create account.");
-            }
-        });
-
-        // Initial fetch of account data
-        fetchAccounts();
-    });
+        if (event.target === withdrawModal) {
+            withdrawModal.style.display = 'none';
+        }
+        if (event.target === depositModal) {
+            depositModal.style.display = 'none';
+        }
+    }
 </script>
 </body>
 </html>

@@ -5,6 +5,6 @@
          version="4.0">
     <welcome-file-list>
         <!-- The default page to serve -->
-        <welcome-file>index.html</welcome-file>
+        <welcome-file>signin.html</welcome-file>
     </welcome-file-list>
 </web-app>
