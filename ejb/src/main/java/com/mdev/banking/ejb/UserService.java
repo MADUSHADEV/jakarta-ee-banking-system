@@ -17,7 +17,6 @@ public class UserService {
 
     /**
      * Creates a new user, storing the password in plain text.
-     * WARNING: Insecure, for academic purposes only.
      */
     public void createUser(String username, String password, Set<String> roles) {
         User user = new User();

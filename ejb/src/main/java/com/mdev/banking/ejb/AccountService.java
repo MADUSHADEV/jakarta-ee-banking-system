@@ -20,7 +20,6 @@ import java.util.Optional;
 
 /**
  * EJB for managing banking operations like deposit, withdraw, and transfer.
- * Demonstrates transactions, security, and exception handling.
  */
 @Stateless
 @Interceptors(LoggingInterceptor.class)

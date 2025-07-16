@@ -14,7 +14,7 @@ public class Customer implements Serializable {
     private String name;
     private String contactInfo;
 
-    // A customer can have multiple accounts.
+
     @OneToMany(mappedBy = "customer", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<Account> accounts = new ArrayList<>();
 

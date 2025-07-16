@@ -21,15 +21,15 @@ public class User implements Serializable {
     private String username;
 
     @Column(nullable = false)
-    private String password; // This will store the HASHED password
+    private String password;
 
-    // Stores the roles (e.g., "ADMIN", "USER") associated with this user
+
     @ElementCollection(fetch = FetchType.EAGER)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "app_user_id"))
     @Column(name = "role_name")
     private Set<String> roles = new HashSet<>();
 
-    // Getters and Setters
+
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
     public String getUsername() { return username; }
