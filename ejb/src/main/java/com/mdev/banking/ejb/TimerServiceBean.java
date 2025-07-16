@@ -23,11 +23,6 @@ public class TimerServiceBean {
     @Inject
     private AccountService accountService;
 
-    /**
-     * This method runs automatically every day at 1 minute past midnight.
-     * It calculates and deposits daily interest for all accounts.
-     * persistent = false means the timer won't survive a server restart.
-     */
     @Schedule(hour = "0", minute = "1", second = "0", persistent = false)
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
     public void applyDailyInterest() {
@@ -41,5 +36,26 @@ public class TimerServiceBean {
             logger.info("TIMER: Applied interest of " + String.format("%.4f", dailyInterest) + " to account " + account.getAccountNumber());
         }
         logger.info("TIMER: Finished daily interest calculation task.");
+    }
+
+    @Schedule(hour = "2", minute = "0", second = "0", persistent = false)
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void performScheduledTransfer() {
+        logger.info("TIMER: Starting scheduled fund transfer task.");
+        try {
+
+            String fromAccount = "ACC001";
+            String toAccount = "ACC002";
+            double amount = 50.00;
+
+            accountService.transfer(fromAccount, toAccount, amount);
+
+            logger.info("TIMER: Successfully transferred " + amount + " from " + fromAccount + " to " + toAccount);
+
+        } catch (Exception e) {
+
+            logger.severe("TIMER: Scheduled fund transfer failed: " + e.getMessage());
+        }
+        logger.info("TIMER: Finished scheduled fund transfer task.");
     }
 }
